@@ -95,6 +95,21 @@
         .search-bar input:focus { outline: none; border-color: var(--primary); width: 250px; }
         .search-bar svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
 
+        .header-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
         .hamburger { display: none; font-size: 1.5rem; color: var(--text-main); }
 
         /* Layout */
@@ -185,6 +200,57 @@
         .settings-group { margin-bottom: 2rem; }
         .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--border); }
         
+        .avatar-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+        }
+
+        .avatar-circle {
+            width: 100px;
+            height: 100px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            overflow: hidden;
+            border: 3px solid var(--border);
+            box-shadow: var(--shadow-md);
+        }
+
+        .avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .avatar-edit-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: var(--surface-color);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .avatar-edit-btn:hover {
+            transform: scale(1.05);
+            background-color: var(--bg-color);
+        }
+
         /* Toggle Switch */
         .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -235,7 +301,9 @@
                     <input type="text" placeholder="Suchen..." id="searchInput" onkeyup="app.handleSearch(event)">
                 </div>
                 <a href="#" onclick="app.navigate('profil')" title="Profil" style="color: var(--text-main)">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    <div class="header-avatar" id="headerAvatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
                 </a>
                 <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('mobile-open')">☰</button>
             </div>
@@ -250,7 +318,6 @@
                     <h1 id="greeting">Guten Morgen, Alex!</h1>
                     <p>Bereit, heute etwas Neues zu lernen?</p>
                 </div>
-                <!-- Optional Illustration placeholder -->
                 <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1" style="opacity:0.8"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
             </div>
 
@@ -397,7 +464,6 @@
                 <div class="card">
                     <h3>Lernaktivität (Letzte 7 Tage)</h3>
                     <div style="display: flex; align-items: flex-end; gap: 8px; height: 200px; margin-top: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
-                        <!-- Mock Activity Chart -->
                         <div style="flex: 1; background: var(--primary); height: 40%; border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
                         <div style="flex: 1; background: var(--primary); height: 20%; border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
                         <div style="flex: 1; background: var(--primary); height: 60%; border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
@@ -417,13 +483,31 @@
         <section id="view-profil" class="view hidden">
             <h1>Mein Profil</h1>
             <div class="card" style="max-width: 600px; margin: 0 auto;">
-                <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
-                    <div style="width: 80px; height: 80px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold;">
-                        A
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-bottom: 2rem; text-align: center;">
+                    <div class="avatar-wrapper">
+                        <div class="avatar-circle" id="profileAvatarContainer">
+                            <!-- Image or initial injected here -->
+                        </div>
+                        <button class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()" title="Profilbild ändern">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        </button>
+                        <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="app.handleAvatarUpload(event)">
                     </div>
                     <div>
-                        <h2>Alex Müller</h2>
-                        <p style="margin: 0;">Lernstufe: Fortgeschritten</p>
+                        <h2 id="profileNameDisplay" style="margin-bottom: 0.2rem;">Alex Müller</h2>
+                        <p style="margin: 0; font-size:0.9rem; color: var(--text-muted);">Lernstufe: Fortgeschritten</p>
+                        <button class="btn btn-secondary" id="removeAvatarBtn" style="margin-top: 0.5rem; padding: 0.3rem 0.8rem; font-size: 0.8rem; display: none;" onclick="app.removeAvatar()">Bild entfernen</button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Persönliche Daten</h3>
+                    <div class="setting-item" style="flex-direction: column; align-items: flex-start; gap: 0.5rem;">
+                        <label for="profileNameInput" style="font-weight: 500; font-size: 0.95rem;">Name des Schülers</label>
+                        <div style="display: flex; gap: 0.5rem; width: 100%;">
+                            <input type="text" id="profileNameInput" style="flex: 1; padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-color); color: var(--text-main); font-size: 1rem;" placeholder="Dein Name">
+                            <button class="btn btn-primary" onclick="app.saveProfileName()">Speichern</button>
+                        </div>
                     </div>
                 </div>
 
@@ -533,7 +617,6 @@
                 'html-css': {
                     html: `<div class="content-box"><h1>HTML & CSS</h1><p>HTML baut das Gerüst, CSS macht es schön.</p><button class="btn btn-primary" onclick="app.markTopicCompleted('html-css'); app.quiz.start('html-css')">Übung starten &rarr;</button></div>`
                 },
-                // Fallback for others
                 'default': {
                     html: `<div class="content-box"><h1>Inhalt folgt</h1><p>Dieser Lerninhalt wird gerade überarbeitet.</p><button class="btn btn-primary" onclick="app.markTopicCompleted(app.currentTopic); app.navigate('fach', app.currentSubject)">Zurück zur Übersicht</button></div>`
                 }
@@ -567,15 +650,18 @@
 
         // --- APP LOGIK ---
         const app = {
-            currentUser: { name: 'Alex' },
+            currentUser: { 
+                name: 'Alex Müller',
+                avatar: null
+            },
             currentSubject: null,
             currentTopic: null,
             progress: {
                 completedTopics: [],
-                quizScores: {}, // { 'lin-func': 100 }
+                quizScores: {},
                 lastTopic: 'lin-func',
                 lastSubject: 'math',
-                studyTimeMinutes: 275, // 4h 35m
+                studyTimeMinutes: 275,
                 activityLog: [
                     { type: 'quiz', name: 'Quiz: Elektrische Spannung', date: 'Heute' },
                     { type: 'thema', name: 'Thema: Bruchrechnen bearbeitet', date: 'Gestern' }
@@ -586,8 +672,9 @@
                 this.loadProgress();
                 this.applyDarkMode();
                 
-                // Set initial active nav
+                // Set initial active nav & header elements
                 this.updateNav('dashboard');
+                this.renderHeaderAvatar();
                 
                 // Render initial data
                 this.renderDashboard();
@@ -600,16 +687,23 @@
             },
 
             loadProgress() {
-                const saved = localStorage.getItem('lernhub_progress');
-                if (saved) {
-                    this.progress = { ...this.progress, ...JSON.parse(saved) };
+                const savedProgress = localStorage.getItem('lernhub_progress');
+                if (savedProgress) {
+                    this.progress = { ...this.progress, ...JSON.parse(savedProgress) };
                 }
+
+                const savedUser = localStorage.getItem('lernhub_user');
+                if (savedUser) {
+                    this.currentUser = { ...this.currentUser, ...JSON.parse(savedUser) };
+                }
+
                 const isDark = localStorage.getItem('lernhub_darkmode') === 'true';
                 document.getElementById('darkModeToggle').checked = isDark;
             },
 
             saveProgress() {
                 localStorage.setItem('lernhub_progress', JSON.stringify(this.progress));
+                localStorage.setItem('lernhub_user', JSON.stringify(this.currentUser));
             },
 
             toggleDarkMode(isDark) {
@@ -647,6 +741,7 @@
                 if (viewId === 'fach') this.renderFach(param);
                 if (viewId === 'thema') this.renderThema(param);
                 if (viewId === 'fortschritt') this.renderFortschritt();
+                if (viewId === 'profil') this.renderProfil();
                 
                 window.scrollTo(0,0);
             },
@@ -655,6 +750,16 @@
                 document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
                 const activeLink = document.querySelector(`.nav-links a[data-nav="${viewId}"]`);
                 if (activeLink) activeLink.classList.add('active');
+            },
+
+            renderHeaderAvatar() {
+                const container = document.getElementById('headerAvatar');
+                if (this.currentUser.avatar) {
+                    container.innerHTML = `<img src="${this.currentUser.avatar}" style="width:100%; height:100%; object-fit:cover;" alt="Avatar">`;
+                } else {
+                    const initial = this.currentUser.name ? this.currentUser.name.charAt(0).toUpperCase() : 'A';
+                    container.innerHTML = initial;
+                }
             },
 
             getSubjectProgress(subId) {
@@ -668,7 +773,9 @@
             },
 
             renderDashboard() {
-                document.getElementById('greeting').innerText = `Guten Morgen, ${this.currentUser.name}!`;
+                // Show first name or full name in greeting
+                const firstName = this.currentUser.name.split(' ')[0] || 'Alex';
+                document.getElementById('greeting').innerText = `Guten Morgen, ${firstName}!`;
                 
                 // Continue Learning Card
                 if (this.progress.lastTopic) {
@@ -811,6 +918,73 @@
                 document.getElementById('thema-content-container').innerHTML = contentData.html;
             },
 
+            renderProfil() {
+                document.getElementById('profileNameDisplay').innerText = this.currentUser.name;
+                document.getElementById('profileNameInput').value = this.currentUser.name;
+
+                const avatarContainer = document.getElementById('profileAvatarContainer');
+                const removeBtn = document.getElementById('removeAvatarBtn');
+
+                if (this.currentUser.avatar) {
+                    avatarContainer.innerHTML = `<img src="${this.currentUser.avatar}" alt="Profilbild">`;
+                    removeBtn.style.display = 'inline-block';
+                } else {
+                    const initial = this.currentUser.name ? this.currentUser.name.charAt(0).toUpperCase() : 'A';
+                    avatarContainer.innerHTML = initial;
+                    removeBtn.style.display = 'none';
+                }
+            },
+
+            saveProfileName() {
+                const input = document.getElementById('profileNameInput');
+                const val = input.value.trim();
+                if (val.length === 0) {
+                    this.showToast('Bitte gib einen gültigen Namen ein.');
+                    return;
+                }
+                this.currentUser.name = val;
+                this.saveProgress();
+                this.renderProfil();
+                this.renderHeaderAvatar();
+                this.renderDashboard();
+                this.showToast('Name erfolgreich gespeichert!');
+            },
+
+            handleAvatarUpload(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                if (!file.type.startsWith('image/')) {
+                    this.showToast('Bitte wähle eine Bilddatei aus.');
+                    return;
+                }
+
+                // Max file size 2MB to prevent localStorage saturation
+                if (file.size > 2 * 1024 * 1024) {
+                    this.showToast('Das Bild sollte kleiner als 2 MB sein.');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    this.currentUser.avatar = event.target.result;
+                    this.saveProgress();
+                    this.renderProfil();
+                    this.renderHeaderAvatar();
+                    this.showToast('Profilbild erfolgreich aktualisiert!');
+                };
+                reader.readAsDataURL(file);
+            },
+
+            removeAvatar() {
+                this.currentUser.avatar = null;
+                document.getElementById('avatarInput').value = '';
+                this.saveProgress();
+                this.renderProfil();
+                this.renderHeaderAvatar();
+                this.showToast('Profilbild entfernt.');
+            },
+
             continueLearning() {
                 if(this.progress.lastSubject && this.progress.lastTopic) {
                     this.currentSubject = this.progress.lastSubject;
@@ -895,7 +1069,6 @@
                     resultsContainer.innerHTML = '';
 
                     let found = 0;
-                    // Search in topics
                     for (const [subjId, topics] of Object.entries(db.topics)) {
                         const subj = db.subjects.find(s => s.id === subjId);
                         topics.forEach(t => {
@@ -965,13 +1138,12 @@
                 },
 
                 selectAnswer(idx) {
-                    if (this.selectedOption !== null) return; // Already answered
+                    if (this.selectedOption !== null) return;
                     this.selectedOption = idx;
                     
                     const qData = this.questions[this.currentIndex];
                     const isCorrect = idx === qData.correct;
                     
-                    // Style buttons
                     document.querySelectorAll('.quiz-option').forEach((btn, i) => {
                         btn.disabled = true;
                         if (i === qData.correct) {
@@ -981,7 +1153,6 @@
                         }
                     });
 
-                    // Feedback
                     const feedbackBox = document.getElementById('quiz-feedback');
                     const title = document.getElementById('quiz-feedback-title');
                     
@@ -1022,7 +1193,6 @@
                     
                     circle.innerText = `${percentage}%`;
                     
-                    // Define colors and messages based on result
                     let color = 'var(--primary)';
                     if(percentage >= 90) {
                         title.innerText = 'Hervorragend!'; sub.innerText = 'Du beherrschst dieses Thema sehr gut.'; color = 'var(--success)';
@@ -1037,7 +1207,6 @@
                     circle.style.borderColor = color;
                     circle.style.color = color;
 
-                    // Save Progress
                     app.progress.quizScores[app.currentTopic] = Math.max(app.progress.quizScores[app.currentTopic] || 0, percentage);
                     app.logActivity('quiz', `Quiz abgeschlossen (${percentage}%)`);
                 }
