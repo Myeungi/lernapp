@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LernHub - Deine Lernplattform</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Helles Theme (Standard) */
+            --bg-color: #f8fafc;
+            --surface-color: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --secondary: #0ea5e9;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --border: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --radius: 12px;
+            --radius-sm: 8px;
+        }
+
+        .dark-mode {
+            --bg-color: #0f172a;
+            --surface-color: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+        /* Typography */
+        h1, h2, h3, h4 { font-weight: 600; line-height: 1.2; color: var(--text-main); }
+        h1 { font-size: 2rem; margin-bottom: 1rem; }
+        h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        p { margin-bottom: 1rem; color: var(--text-muted); }
+
+        /* Navigation */
+        header {
+            background-color: var(--surface-color);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+        
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links a { font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+
+        .nav-actions { display: flex; gap: 1rem; align-items: center; }
+        
+        .search-bar { position: relative; }
+        .search-bar input {
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            width: 200px;
+            transition: width 0.3s;
+        }
+        .search-bar input:focus { outline: none; border-color: var(--primary); width: 250px; }
+        .search-bar svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        .hamburger { display: none; font-size: 1.5rem; color: var(--text-main); }
+
+        /* Layout */
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; min-height: calc(100vh - 160px); }
+        .view { display: none; animation: fadeIn 0.3s ease; }
+        .view.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Components */
+        .card {
+            background-color: var(--surface-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); }
+
+        .grid { display: grid; gap: 1.5rem; }
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+        .grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.75rem 1.5rem; border-radius: var(--radius-sm); font-weight: 500;
+            transition: all 0.2s; cursor: pointer; text-align: center;
+        }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: var(--bg-color); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-error { background-color: var(--error); color: white; }
+
+        /* Progress Bar */
+        .progress-container { width: 100%; background-color: var(--border); border-radius: 999px; height: 8px; margin-top: 0.5rem; overflow: hidden; }
+        .progress-bar { height: 100%; background-color: var(--primary); border-radius: 999px; transition: width 0.5s ease-in-out; }
+        .progress-text { display: flex; justify-content: space-between; font-size: 0.875rem; margin-top: 0.25rem; color: var(--text-muted); font-weight: 500; }
+
+        /* Dashboard Specifics */
+        .hero-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .hero-text h1 { font-size: 2.5rem; color: var(--primary); }
+        
+        .activity-list li { padding: 1rem 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+        .activity-list li:last-child { border-bottom: none; }
+        .activity-icon { width: 40px; height: 40px; border-radius: 50%; background-color: var(--bg-color); display: flex; align-items: center; justify-content: center; color: var(--primary); }
+
+        /* Topic / Learn Page */
+        .breadcrumb { display: flex; gap: 0.5rem; color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.9rem; }
+        .breadcrumb span { color: var(--primary); font-weight: 500; cursor: pointer; }
+        
+        .content-section { max-width: 800px; margin: 0 auto; }
+        .content-box { background-color: var(--surface-color); padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow-sm); border: 1px solid var(--border); margin-bottom: 2rem; }
+        .content-box h3 { margin-top: 1.5rem; color: var(--text-main); }
+        .content-box p { color: var(--text-main); }
+        
+        .alert-box { background-color: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--warning); padding: 1rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin: 1.5rem 0; }
+        .alert-box.info { background-color: rgba(14, 165, 233, 0.1); border-left-color: var(--secondary); }
+
+        .interactive-example { background-color: var(--bg-color); border: 1px solid var(--border); padding: 1.5rem; border-radius: var(--radius-sm); margin: 1.5rem 0; font-family: monospace; font-size: 1.1rem; text-align: center; }
+
+        /* Quiz */
+        .quiz-container { max-width: 600px; margin: 0 auto; }
+        .quiz-option { display: block; width: 100%; text-align: left; padding: 1rem 1.5rem; margin-bottom: 1rem; background-color: var(--bg-color); border: 2px solid var(--border); border-radius: var(--radius-sm); font-size: 1rem; color: var(--text-main); transition: all 0.2s; }
+        .quiz-option:hover:not(:disabled) { border-color: var(--primary); background-color: rgba(79, 70, 229, 0.05); }
+        .quiz-option.correct { background-color: rgba(16, 185, 129, 0.1); border-color: var(--success); color: var(--success); }
+        .quiz-option.wrong { background-color: rgba(239, 68, 68, 0.1); border-color: var(--error); color: var(--error); }
+        
+        .quiz-feedback { margin: 1.5rem 0; padding: 1rem; border-radius: var(--radius-sm); display: none; }
+        .quiz-feedback.show { display: block; animation: fadeIn 0.3s; }
+        
+        .quiz-result-circle { width: 150px; height: 150px; border-radius: 50%; border: 8px solid var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 700; margin: 2rem auto; color: var(--primary); }
+
+        /* Progress Page */
+        .stat-card { text-align: center; }
+        .stat-card h3 { font-size: 2rem; color: var(--primary); margin-bottom: 0.2rem; }
+        .stat-card p { font-size: 0.9rem; margin: 0; }
+        
+        .chart-bar-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .chart-label { width: 100px; font-weight: 500; }
+        .chart-track { flex: 1; background-color: var(--border); height: 12px; border-radius: 6px; overflow: hidden; }
+        .chart-fill { height: 100%; background-color: var(--primary); border-radius: 6px; }
+
+        /* Profile */
+        .settings-group { margin-bottom: 2rem; }
+        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+        
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links, .search-bar { display: none; }
+            .nav-links.mobile-open {
+                display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0;
+                background-color: var(--surface-color); padding: 1rem; border-bottom: 1px solid var(--border);
+                box-shadow: var(--shadow-md);
+            }
+            .hamburger { display: block; }
+            .hero-section { flex-direction: column; text-align: center; }
+            .hero-text h1 { font-size: 2rem; }
+            .grid-3, .grid-4 { grid-template-columns: 1fr; }
+        }
+
+        /* Modal / Toast */
+        #toast {
+            position: fixed; bottom: 20px; right: 20px; background-color: var(--text-main); color: var(--bg-color);
+            padding: 1rem 1.5rem; border-radius: var(--radius-sm); box-shadow: var(--shadow-md);
+            transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000;
+        }
+        #toast.show { transform: translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo" onclick="app.navigate('dashboard')">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                LernHub
+            </a>
+            <nav class="nav-links" id="navLinks">
+                <a href="#" data-nav="dashboard" onclick="app.navigate('dashboard')">Start</a>
+                <a href="#" data-nav="faecher" onclick="app.navigate('faecher')">Fächer</a>
+                <a href="#" data-nav="fortschritt" onclick="app.navigate('fortschritt')">Fortschritt</a>
+            </nav>
+            <div class="nav-actions">
+                <div class="search-bar">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    <input type="text" placeholder="Suchen..." id="searchInput" onkeyup="app.handleSearch(event)">
+                </div>
+                <a href="#" onclick="app.navigate('profil')" title="Profil" style="color: var(--text-main)">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </a>
+                <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('mobile-open')">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <main id="app-container">
+        <!-- Dashboard -->
+        <section id="view-dashboard" class="view active">
+            <div class="hero-section">
+                <div class="hero-text">
+                    <h1 id="greeting">Guten Morgen, Alex!</h1>
+                    <p>Bereit, heute etwas Neues zu lernen?</p>
+                </div>
+                <!-- Optional Illustration placeholder -->
+                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1" style="opacity:0.8"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+            </div>
+
+            <div class="grid grid-2" style="margin-bottom: 3rem;">
+                <div class="card">
+                    <h3>Weiterlernen</h3>
+                    <p id="continue-topic-name">Mathematik - Lineare Funktionen</p>
+                    <div class="progress-container"><div class="progress-bar" id="continue-progress" style="width: 65%;"></div></div>
+                    <div class="progress-text"><span>Fortschritt</span><span id="continue-progress-text">65%</span></div>
+                    <button class="btn btn-primary" style="width: 100%; margin-top: 1rem;" onclick="app.continueLearning()">Weiterlernen &rarr;</button>
+                </div>
+                <div class="card">
+                    <h3>Dein Tagesziel</h3>
+                    <p>30 Minuten lernen</p>
+                    <div class="progress-container"><div class="progress-bar" id="daily-progress" style="width: 66%; background-color: var(--success);"></div></div>
+                    <div class="progress-text"><span>Heute erreicht</span><span id="daily-progress-text">20 / 30 Min</span></div>
+                    <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;" onclick="app.navigate('fortschritt')">Statistiken ansehen</button>
+                </div>
+            </div>
+
+            <h2>Meine Fächer</h2>
+            <div class="grid grid-4" id="dashboard-subjects" style="margin-bottom: 3rem;">
+                <!-- Dynamically filled -->
+            </div>
+
+            <h2>Letzte Aktivitäten</h2>
+            <div class="card">
+                <ul class="activity-list" id="activity-list">
+                    <!-- Dynamically filled -->
+                </ul>
+            </div>
+        </section>
+
+        <!-- Fächer Übersicht -->
+        <section id="view-faecher" class="view hidden">
+            <h1>Meine Fächer</h1>
+            <p>Wähle ein Fach aus, um mit dem Lernen zu beginnen.</p>
+            <div class="grid grid-3" id="faecher-list">
+                <!-- Dynamically filled -->
+            </div>
+        </section>
+
+        <!-- Fach Detail -->
+        <section id="view-fach" class="view hidden">
+            <div class="breadcrumb">
+                <span onclick="app.navigate('faecher')">Fächer</span> > <span id="fach-title-crumb">...</span>
+            </div>
+            <h1 id="fach-title">Fach</h1>
+            <p id="fach-desc">Beschreibung des Fachs.</p>
+            
+            <h2 style="margin-top: 2rem;">Themen</h2>
+            <div class="grid grid-2" id="thema-list">
+                <!-- Dynamically filled -->
+            </div>
+        </section>
+
+        <!-- Thema Detail (Lernseite) -->
+        <section id="view-thema" class="view hidden">
+            <div class="breadcrumb">
+                <span onclick="app.navigate('faecher')">Fächer</span> > 
+                <span id="thema-fach-crumb" onclick="app.navigate('fach', app.currentSubject)">...</span> > 
+                <span id="thema-title-crumb">...</span>
+            </div>
+            
+            <div class="content-section" id="thema-content-container">
+                <!-- Content dynamically injected here -->
+            </div>
+        </section>
+
+        <!-- Quiz -->
+        <section id="view-quiz" class="view hidden">
+            <div class="quiz-container">
+                <div class="breadcrumb">
+                    <span onclick="app.navigate('fach', app.currentSubject)">Zurück zum Thema</span>
+                </div>
+                
+                <div id="quiz-active-area">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2>Quiz</h2>
+                        <span id="quiz-counter" style="color: var(--text-muted); font-weight: 500;">Frage 1 von X</span>
+                    </div>
+                    <div class="progress-container" style="margin-bottom: 2rem;"><div class="progress-bar" id="quiz-progress" style="width: 0%;"></div></div>
+                    
+                    <div class="card" style="margin-bottom: 2rem;">
+                        <h3 id="quiz-question" style="margin-bottom: 1.5rem; font-size: 1.25rem;">Frage?</h3>
+                        <div id="quiz-options">
+                            <!-- Options injected here -->
+                        </div>
+                        
+                        <div id="quiz-feedback" class="quiz-feedback">
+                            <strong id="quiz-feedback-title"></strong>
+                            <p id="quiz-feedback-text" style="margin: 0.5rem 0 0 0; color: inherit;"></p>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="quiz-next-btn" style="width: 100%; display: none;" onclick="app.quiz.nextQuestion()">Nächste Frage &rarr;</button>
+                </div>
+
+                <div id="quiz-result-area" style="display: none; text-align: center;">
+                    <h2>Quiz abgeschlossen!</h2>
+                    <div class="quiz-result-circle" id="quiz-score-circle">80%</div>
+                    <h3 id="quiz-result-text">Sehr gut!</h3>
+                    <p id="quiz-result-subtext">Du hast das Thema gut verstanden.</p>
+                    
+                    <div class="grid grid-2" style="margin-top: 2rem;">
+                        <button class="btn btn-secondary" onclick="app.quiz.start(app.currentTopic)">Quiz wiederholen</button>
+                        <button class="btn btn-primary" onclick="app.navigate('thema', app.currentTopic)">Zurück zum Thema</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fortschritt -->
+        <section id="view-fortschritt" class="view hidden">
+            <h1>Mein Fortschritt</h1>
+            
+            <div class="grid grid-4" style="margin-bottom: 3rem;">
+                <div class="card stat-card">
+                    <h3 id="stat-time">4h 35m</h3>
+                    <p>Lernzeit</p>
+                </div>
+                <div class="card stat-card">
+                    <h3 id="stat-topics">12</h3>
+                    <p>Abgeschlossene Themen</p>
+                </div>
+                <div class="card stat-card">
+                    <h3 id="stat-quizzes">8</h3>
+                    <p>Absolvierte Quizze</p>
+                </div>
+                <div class="card stat-card">
+                    <h3 id="stat-avg">82%</h3>
+                    <p>Durchschnitt (Quiz)</p>
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="card">
+                    <h3>Fortschritt nach Fach</h3>
+                    <div id="progress-bars-container" style="margin-top: 1.5rem;">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>Lernaktivität (Letzte 7 Tage)</h3>
+                    <div style="display: flex; align-items: flex-end; gap: 8px; height: 200px; margin-top: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                        <!-- Mock Activity Chart -->
+                        <div style="flex: 1; background: var(--primary); height: 40%; border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                        <div style="flex: 1; background: var(--primary); height: 20%; border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                        <div style="flex: 1; background: var(--primary); height: 60%; border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                        <div style="flex: 1; background: var(--primary); height: 80%; border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                        <div style="flex: 1; background: var(--primary); height: 50%; border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                        <div style="flex: 1; background: var(--primary); height: 30%; border-radius: 4px 4px 0 0; opacity: 0.7;"></div>
+                        <div style="flex: 1; background: var(--primary); height: 90%; border-radius: 4px 4px 0 0;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">
+                        <span>Mo</span><span>Di</span><span>Mi</span><span>Do</span><span>Fr</span><span>Sa</span><span>So</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profil -->
+        <section id="view-profil" class="view hidden">
+            <h1>Mein Profil</h1>
+            <div class="card" style="max-width: 600px; margin: 0 auto;">
+                <div style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div style="width: 80px; height: 80px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold;">
+                        A
+                    </div>
+                    <div>
+                        <h2>Alex Müller</h2>
+                        <p style="margin: 0;">Lernstufe: Fortgeschritten</p>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h3>Einstellungen</h3>
+                    <div class="setting-item">
+                        <div>
+                            <strong>Dark Mode</strong>
+                            <p style="margin: 0; font-size: 0.9rem;">Dunkles Design aktivieren</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle" onchange="app.toggleDarkMode(this.checked)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div>
+                            <strong>Sprache</strong>
+                            <p style="margin: 0; font-size: 0.9rem;">Plattform-Sprache</p>
+                        </div>
+                        <select style="padding: 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-color); color: var(--text-main);">
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-error" style="width: 100%;" onclick="app.resetProgress()">Lernfortschritt zurücksetzen</button>
+            </div>
+        </section>
+
+        <!-- Suchergebnisse (Overlay) -->
+        <section id="view-search" class="view hidden">
+            <h1>Suchergebnisse</h1>
+            <p id="search-query-text">Zeige Ergebnisse für "..."</p>
+            <div class="grid grid-3" id="search-results-list">
+                <!-- Results -->
+            </div>
+        </section>
+
+    </main>
+
+    <div id="toast">Nachricht hier</div>
+
+    <script>
+        // --- DATENBANK (Mock Data) ---
+        const db = {
+            subjects: [
+                { id: 'math', name: 'Mathematik', icon: 'M', color: '#4f46e5', desc: 'Grundlagen, Funktionen, Geometrie und Algebra.' },
+                { id: 'it', name: 'Informatik', icon: 'I', color: '#0ea5e9', desc: 'Algorithmen, Programmierung, HTML/CSS und Datenbanken.' },
+                { id: 'physik', name: 'Physik', icon: 'P', color: '#f59e0b', desc: 'Mechanik, Elektrizitätslehre und Optik.' },
+                { id: 'deutsch', name: 'Deutsch', icon: 'D', color: '#ec4899', desc: 'Grammatik, Textanalyse und Rechtschreibung.' }
+            ],
+            topics: {
+                'math': [
+                    { id: 'lin-func', title: 'Lineare Funktionen', diff: 'Mittel', desc: 'f(x) = mx + b verstehen und anwenden.' },
+                    { id: 'quad-func', title: 'Quadratische Funktionen', diff: 'Schwer', desc: 'Parabeln, Scheitelpunkt und pq-Formel.' },
+                    { id: 'bruch', title: 'Bruchrechnen', diff: 'Leicht', desc: 'Brüche addieren, subtrahieren und multiplizieren.' }
+                ],
+                'it': [
+                    { id: 'html-css', title: 'HTML & CSS Basics', diff: 'Leicht', desc: 'Struktur und Design von Webseiten.' },
+                    { id: 'js-basics', title: 'JavaScript Grundlagen', diff: 'Mittel', desc: 'Variablen, Schleifen und Funktionen.' }
+                ],
+                'physik': [
+                    { id: 'spannung', title: 'Elektrische Spannung', diff: 'Mittel', desc: 'Volt, Stromkreis und Spannungsmessung.' }
+                ],
+                'deutsch': [
+                    { id: 'komma', title: 'Kommasetzung', diff: 'Mittel', desc: 'Haupt- und Nebensätze richtig trennen.' }
+                ]
+            },
+            content: {
+                'lin-func': {
+                    html: `
+                        <div class="content-box">
+                            <h1>Lineare Funktionen</h1>
+                            <p>Eine lineare Funktion beschreibt einen Zusammenhang, bei dem sich der Funktionswert gleichmäßig verändert. Graphisch dargestellt ergibt dies immer eine gerade Linie.</p>
+                            
+                            <h3>Die allgemeine Form</h3>
+                            <div class="interactive-example">f(x) = m · x + b</div>
+                            
+                            <p>Dabei bedeuten die einzelnen Buchstaben folgendes:</p>
+                            <ul>
+                                <li><strong>m</strong> = Steigung (Wie steil ist die Gerade?)</li>
+                                <li><strong>b</strong> = y-Achsenabschnitt (Wo schneidet die Gerade die y-Achse?)</li>
+                                <li><strong>x</strong> = Der Eingabewert</li>
+                                <li><strong>f(x)</strong> = Der Funktionswert (oft auch als y bezeichnet)</li>
+                            </ul>
+
+                            <div class="alert-box info">
+                                <strong>💡 Merke:</strong> Bei einer linearen Funktion gibt die Steigung (m) an, wie stark sich der Funktionswert pro Einheit auf der x-Achse verändert. Ist m positiv, steigt die Gerade, ist m negativ, fällt sie.
+                            </div>
+
+                            <h3>Beispiel</h3>
+                            <p>Schauen wir uns die Funktion <code>f(x) = 2x + 3</code> an.</p>
+                            <p>Der y-Achsenabschnitt <strong>b ist 3</strong>. Wenn wir also auf der x-Achse bei 0 starten, sind wir auf der y-Achse bei 3.</p>
+                            <p>Die Steigung <strong>m ist 2</strong>. Das bedeutet: Gehen wir einen Schritt nach rechts (x + 1), müssen wir zwei Schritte nach oben gehen (y + 2).</p>
+                        </div>
+                        
+                        <div class="content-box" style="text-align: center;">
+                            <h3>Hast du das Thema verstanden?</h3>
+                            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1rem;">
+                                <button class="btn btn-secondary" onclick="app.showToast('Lies dir den Text noch einmal in Ruhe durch.')">Noch einmal erklären</button>
+                                <button class="btn btn-primary" onclick="app.markTopicCompleted('lin-func'); app.quiz.start('lin-func')">Ja, verstanden - Übung starten &rarr;</button>
+                            </div>
+                        </div>
+                    `
+                },
+                'html-css': {
+                    html: `<div class="content-box"><h1>HTML & CSS</h1><p>HTML baut das Gerüst, CSS macht es schön.</p><button class="btn btn-primary" onclick="app.markTopicCompleted('html-css'); app.quiz.start('html-css')">Übung starten &rarr;</button></div>`
+                },
+                // Fallback for others
+                'default': {
+                    html: `<div class="content-box"><h1>Inhalt folgt</h1><p>Dieser Lerninhalt wird gerade überarbeitet.</p><button class="btn btn-primary" onclick="app.markTopicCompleted(app.currentTopic); app.navigate('fach', app.currentSubject)">Zurück zur Übersicht</button></div>`
+                }
+            },
+            quizzes: {
+                'lin-func': [
+                    {
+                        q: "Welche Formel beschreibt eine lineare Funktion?",
+                        options: ["f(x) = ax² + bx + c", "f(x) = mx + b", "f(x) = x³", "f(x) = a/x"],
+                        correct: 1,
+                        explanation: "Richtig! Die Form f(x) = mx + b steht für eine Gerade."
+                    },
+                    {
+                        q: "Was gibt der Wert 'm' in der Funktion f(x) = mx + b an?",
+                        options: ["Den y-Achsenabschnitt", "Die Steigung der Geraden", "Den x-Wert", "Den Nullpunkt"],
+                        correct: 1,
+                        explanation: "Genau. 'm' steht immer für die Steigung."
+                    },
+                    {
+                        q: "Wenn eine Gerade parallel zur x-Achse verläuft, wie groß ist dann die Steigung m?",
+                        options: ["m = 1", "m = -1", "m = 0", "m = unendlich"],
+                        correct: 2,
+                        explanation: "Richtig! Wenn sich der y-Wert nicht ändert, ist die Steigung 0 (waagerechte Linie)."
+                    }
+                ],
+                'html-css': [
+                    { q: "Wofür steht HTML?", options: ["Hyper Text Markup Language", "Home Tool Markup Language", "Hyperlinks and Text Markup Language"], correct: 0, explanation: "HTML steht für Hyper Text Markup Language." }
+                ]
+            }
+        };
+
+        // --- APP LOGIK ---
+        const app = {
+            currentUser: { name: 'Alex' },
+            currentSubject: null,
+            currentTopic: null,
+            progress: {
+                completedTopics: [],
+                quizScores: {}, // { 'lin-func': 100 }
+                lastTopic: 'lin-func',
+                lastSubject: 'math',
+                studyTimeMinutes: 275, // 4h 35m
+                activityLog: [
+                    { type: 'quiz', name: 'Quiz: Elektrische Spannung', date: 'Heute' },
+                    { type: 'thema', name: 'Thema: Bruchrechnen bearbeitet', date: 'Gestern' }
+                ]
+            },
+
+            init() {
+                this.loadProgress();
+                this.applyDarkMode();
+                
+                // Set initial active nav
+                this.updateNav('dashboard');
+                
+                // Render initial data
+                this.renderDashboard();
+                
+                // Track study time (simple mock)
+                setInterval(() => {
+                    this.progress.studyTimeMinutes++;
+                    this.saveProgress();
+                }, 60000);
+            },
+
+            loadProgress() {
+                const saved = localStorage.getItem('lernhub_progress');
+                if (saved) {
+                    this.progress = { ...this.progress, ...JSON.parse(saved) };
+                }
+                const isDark = localStorage.getItem('lernhub_darkmode') === 'true';
+                document.getElementById('darkModeToggle').checked = isDark;
+            },
+
+            saveProgress() {
+                localStorage.setItem('lernhub_progress', JSON.stringify(this.progress));
+            },
+
+            toggleDarkMode(isDark) {
+                localStorage.setItem('lernhub_darkmode', isDark);
+                this.applyDarkMode();
+            },
+
+            applyDarkMode() {
+                const isDark = localStorage.getItem('lernhub_darkmode') === 'true';
+                if (isDark) document.body.classList.add('dark-mode');
+                else document.body.classList.remove('dark-mode');
+            },
+
+            navigate(viewId, param = null) {
+                // Hide all views
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active', 'hidden'));
+                document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+                
+                // Show target view
+                const target = document.getElementById(`view-${viewId}`);
+                if(target) {
+                    target.classList.remove('hidden');
+                    target.classList.add('active');
+                }
+
+                // Close mobile menu
+                document.getElementById('navLinks').classList.remove('mobile-open');
+
+                // Update nav highlights
+                this.updateNav(viewId);
+
+                // Specific render logic
+                if (viewId === 'dashboard') this.renderDashboard();
+                if (viewId === 'faecher') this.renderFaecher();
+                if (viewId === 'fach') this.renderFach(param);
+                if (viewId === 'thema') this.renderThema(param);
+                if (viewId === 'fortschritt') this.renderFortschritt();
+                
+                window.scrollTo(0,0);
+            },
+
+            updateNav(viewId) {
+                document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+                const activeLink = document.querySelector(`.nav-links a[data-nav="${viewId}"]`);
+                if (activeLink) activeLink.classList.add('active');
+            },
+
+            getSubjectProgress(subId) {
+                const topics = db.topics[subId] || [];
+                if (topics.length === 0) return 0;
+                let completed = 0;
+                topics.forEach(t => {
+                    if (this.progress.completedTopics.includes(t.id)) completed++;
+                });
+                return Math.round((completed / topics.length) * 100);
+            },
+
+            renderDashboard() {
+                document.getElementById('greeting').innerText = `Guten Morgen, ${this.currentUser.name}!`;
+                
+                // Continue Learning Card
+                if (this.progress.lastTopic) {
+                    const subj = db.subjects.find(s => s.id === this.progress.lastSubject);
+                    const topicList = db.topics[this.progress.lastSubject];
+                    const topic = topicList ? topicList.find(t => t.id === this.progress.lastTopic) : null;
+                    
+                    if (subj && topic) {
+                        document.getElementById('continue-topic-name').innerText = `${subj.name} - ${topic.title}`;
+                        const prog = this.getSubjectProgress(subj.id);
+                        document.getElementById('continue-progress').style.width = `${prog}%`;
+                        document.getElementById('continue-progress-text').innerText = `${prog}%`;
+                    }
+                }
+
+                // Subjects Cards
+                const subContainer = document.getElementById('dashboard-subjects');
+                subContainer.innerHTML = '';
+                db.subjects.forEach(sub => {
+                    const prog = this.getSubjectProgress(sub.id);
+                    const topicsCount = db.topics[sub.id] ? db.topics[sub.id].length : 0;
+                    subContainer.innerHTML += `
+                        <div class="card card-hover" style="cursor:pointer;" onclick="app.navigate('fach', '${sub.id}')">
+                            <div style="display:flex; align-items:center; gap: 1rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; border-radius: 8px; background-color: ${sub.color}20; color: ${sub.color}; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.2rem;">
+                                    ${sub.icon}
+                                </div>
+                                <div>
+                                    <h3 style="margin:0; font-size: 1.1rem;">${sub.name}</h3>
+                                    <p style="margin:0; font-size: 0.8rem;">${topicsCount} Themen</p>
+                                </div>
+                            </div>
+                            <div class="progress-container"><div class="progress-bar" style="width: ${prog}%; background-color: ${sub.color}"></div></div>
+                            <div class="progress-text"><span>Fortschritt</span><span>${prog}%</span></div>
+                        </div>
+                    `;
+                });
+
+                // Activity List
+                const actContainer = document.getElementById('activity-list');
+                actContainer.innerHTML = '';
+                this.progress.activityLog.slice(0, 3).forEach(act => {
+                    const icon = act.type === 'quiz' ? 'Q' : 'T';
+                    actContainer.innerHTML += `
+                        <li>
+                            <div class="activity-icon">${icon}</div>
+                            <div>
+                                <p style="margin:0; font-weight:500; color:var(--text-main);">${act.name}</p>
+                                <p style="margin:0; font-size:0.8rem;">${act.date}</p>
+                            </div>
+                        </li>
+                    `;
+                });
+            },
+
+            renderFaecher() {
+                const container = document.getElementById('faecher-list');
+                container.innerHTML = '';
+                db.subjects.forEach(sub => {
+                    const prog = this.getSubjectProgress(sub.id);
+                    const topicsCount = db.topics[sub.id] ? db.topics[sub.id].length : 0;
+                    container.innerHTML += `
+                        <div class="card card-hover" style="cursor:pointer;" onclick="app.navigate('fach', '${sub.id}')">
+                            <div style="display:flex; align-items:center; gap: 1rem; margin-bottom: 1rem;">
+                                <div style="width: 50px; height: 50px; border-radius: 12px; background-color: ${sub.color}20; color: ${sub.color}; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:1.5rem;">
+                                    ${sub.icon}
+                                </div>
+                                <div>
+                                    <h3 style="margin:0;">${sub.name}</h3>
+                                    <p style="margin:0; font-size: 0.9rem;">${topicsCount} Themen</p>
+                                </div>
+                            </div>
+                            <p style="font-size:0.9rem; margin-bottom:1rem;">${sub.desc}</p>
+                            <div class="progress-container"><div class="progress-bar" style="width: ${prog}%; background-color: ${sub.color}"></div></div>
+                            <div class="progress-text"><span>Lernfortschritt</span><span>${prog}%</span></div>
+                        </div>
+                    `;
+                });
+            },
+
+            renderFach(fachId) {
+                const subj = db.subjects.find(s => s.id === fachId);
+                if(!subj) return;
+                this.currentSubject = fachId;
+                
+                document.getElementById('fach-title-crumb').innerText = subj.name;
+                document.getElementById('fach-title').innerText = subj.name;
+                document.getElementById('fach-desc').innerText = subj.desc;
+
+                const container = document.getElementById('thema-list');
+                container.innerHTML = '';
+                
+                const topics = db.topics[fachId] || [];
+                if (topics.length === 0) {
+                    container.innerHTML = '<p>Noch keine Themen verfügbar.</p>';
+                    return;
+                }
+
+                topics.forEach(t => {
+                    const isCompleted = this.progress.completedTopics.includes(t.id);
+                    const score = this.progress.quizScores[t.id];
+                    let statusHtml = '';
+                    
+                    if (isCompleted) {
+                        statusHtml = `<span style="color: var(--success); font-size:0.8rem; font-weight:bold;">✓ Abgeschlossen ${score ? `(${score}%)` : ''}</span>`;
+                    } else {
+                        statusHtml = `<span style="color: var(--text-muted); font-size:0.8rem;">Noch nicht begonnen</span>`;
+                    }
+
+                    container.innerHTML += `
+                        <div class="card card-hover">
+                            <div style="display:flex; justify-content: space-between; align-items: flex-start;">
+                                <h3 style="margin:0;">${t.title}</h3>
+                                <span style="font-size:0.75rem; padding: 0.2rem 0.5rem; background: var(--bg-color); border-radius: 4px; border: 1px solid var(--border);">${t.diff}</span>
+                            </div>
+                            <p style="margin: 0.5rem 0 1rem 0; font-size:0.9rem;">${t.desc}</p>
+                            <div style="display:flex; justify-content: space-between; align-items: center;">
+                                ${statusHtml}
+                                <button class="btn btn-primary" style="padding: 0.5rem 1rem;" onclick="app.navigate('thema', '${t.id}')">${isCompleted ? 'Wiederholen' : 'Lernen'}</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            },
+
+            renderThema(themaId) {
+                this.currentTopic = themaId;
+                this.progress.lastTopic = themaId;
+                this.progress.lastSubject = this.currentSubject;
+                this.saveProgress();
+
+                const subj = db.subjects.find(s => s.id === this.currentSubject);
+                const topics = db.topics[this.currentSubject] || [];
+                const topic = topics.find(t => t.id === themaId);
+                
+                document.getElementById('thema-fach-crumb').innerText = subj ? subj.name : 'Fach';
+                document.getElementById('thema-title-crumb').innerText = topic ? topic.title : 'Thema';
+
+                const contentData = db.content[themaId] || db.content['default'];
+                document.getElementById('thema-content-container').innerHTML = contentData.html;
+            },
+
+            continueLearning() {
+                if(this.progress.lastSubject && this.progress.lastTopic) {
+                    this.currentSubject = this.progress.lastSubject;
+                    this.navigate('thema', this.progress.lastTopic);
+                } else {
+                    this.navigate('faecher');
+                }
+            },
+
+            markTopicCompleted(themaId) {
+                if(!this.progress.completedTopics.includes(themaId)) {
+                    this.progress.completedTopics.push(themaId);
+                    this.logActivity('thema', `Thema abgeschlossen`);
+                    this.saveProgress();
+                }
+            },
+
+            renderFortschritt() {
+                const hours = Math.floor(this.progress.studyTimeMinutes / 60);
+                const mins = this.progress.studyTimeMinutes % 60;
+                document.getElementById('stat-time').innerText = `${hours}h ${mins}m`;
+                
+                document.getElementById('stat-topics').innerText = this.progress.completedTopics.length;
+                
+                const scores = Object.values(this.progress.quizScores);
+                document.getElementById('stat-quizzes').innerText = scores.length;
+                
+                const avg = scores.length > 0 ? Math.round(scores.reduce((a,b)=>a+b, 0) / scores.length) : 0;
+                document.getElementById('stat-avg').innerText = `${avg}%`;
+
+                // Bars
+                const container = document.getElementById('progress-bars-container');
+                container.innerHTML = '';
+                db.subjects.forEach(sub => {
+                    const prog = this.getSubjectProgress(sub.id);
+                    container.innerHTML += `
+                        <div class="chart-bar-row">
+                            <div class="chart-label">${sub.name}</div>
+                            <div class="chart-track"><div class="chart-fill" style="width: ${prog}%; background-color: ${sub.color}"></div></div>
+                            <div style="width: 40px; text-align:right; font-size:0.9rem;">${prog}%</div>
+                        </div>
+                    `;
+                });
+            },
+
+            logActivity(type, text) {
+                const topicObj = db.topics[this.currentSubject]?.find(t => t.id === this.currentTopic);
+                const name = topicObj ? `${text}: ${topicObj.title}` : text;
+                this.progress.activityLog.unshift({ type, name, date: 'Gerade eben' });
+                this.saveProgress();
+            },
+
+            resetProgress() {
+                if(confirm("Möchtest du wirklich deinen gesamten Fortschritt löschen? Dies kann nicht rückgängig gemacht werden.")) {
+                    this.progress = {
+                        completedTopics: [], quizScores: {}, lastTopic: null, lastSubject: null, studyTimeMinutes: 0, activityLog: []
+                    };
+                    this.saveProgress();
+                    this.showToast("Fortschritt zurückgesetzt.");
+                    this.navigate('dashboard');
+                }
+            },
+
+            showToast(msg) {
+                const toast = document.getElementById('toast');
+                toast.innerText = msg;
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 3000);
+            },
+
+            handleSearch(e) {
+                const q = e.target.value.toLowerCase();
+                if(e.key === 'Enter' || q.length > 2) {
+                    if(q.length === 0) { this.navigate('dashboard'); return; }
+                    
+                    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+                    document.getElementById('view-search').classList.remove('hidden');
+                    document.getElementById('view-search').classList.add('active');
+                    
+                    document.getElementById('search-query-text').innerText = `Suchergebnisse für "${q}"`;
+                    const resultsContainer = document.getElementById('search-results-list');
+                    resultsContainer.innerHTML = '';
+
+                    let found = 0;
+                    // Search in topics
+                    for (const [subjId, topics] of Object.entries(db.topics)) {
+                        const subj = db.subjects.find(s => s.id === subjId);
+                        topics.forEach(t => {
+                            if (t.title.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q)) {
+                                found++;
+                                resultsContainer.innerHTML += `
+                                    <div class="card card-hover" style="cursor:pointer;" onclick="app.currentSubject='${subjId}'; app.navigate('thema', '${t.id}')">
+                                        <p style="color: var(--primary); font-size:0.8rem; margin:0 0 0.5rem 0;">${subj.name}</p>
+                                        <h3 style="margin:0 0 0.5rem 0;">${t.title}</h3>
+                                        <p style="margin:0; font-size:0.9rem;">${t.desc}</p>
+                                    </div>
+                                `;
+                            }
+                        });
+                    }
+
+                    if(found === 0) {
+                        resultsContainer.innerHTML = `<p style="grid-column: 1 / -1;">Keine passenden Ergebnisse gefunden.</p>`;
+                    }
+                }
+            },
+
+            // --- QUIZ SYSTEM ---
+            quiz: {
+                questions: [],
+                currentIndex: 0,
+                score: 0,
+                selectedOption: null,
+
+                start(themaId) {
+                    const q = db.quizzes[themaId];
+                    if(!q || q.length === 0) {
+                        app.showToast("Für dieses Thema sind momentan keine Quizfragen verfügbar.");
+                        return;
+                    }
+                    this.questions = q;
+                    this.currentIndex = 0;
+                    this.score = 0;
+                    
+                    document.getElementById('quiz-active-area').style.display = 'block';
+                    document.getElementById('quiz-result-area').style.display = 'none';
+                    app.navigate('quiz');
+                    this.showQuestion();
+                },
+
+                showQuestion() {
+                    const qData = this.questions[this.currentIndex];
+                    this.selectedOption = null;
+                    
+                    document.getElementById('quiz-counter').innerText = `Frage ${this.currentIndex + 1} von ${this.questions.length}`;
+                    document.getElementById('quiz-progress').style.width = `${(this.currentIndex / this.questions.length) * 100}%`;
+                    document.getElementById('quiz-question').innerText = qData.q;
+                    
+                    const optsContainer = document.getElementById('quiz-options');
+                    optsContainer.innerHTML = '';
+                    
+                    qData.options.forEach((opt, idx) => {
+                        optsContainer.innerHTML += `
+                            <button class="quiz-option" id="opt-${idx}" onclick="app.quiz.selectAnswer(${idx})">
+                                ${String.fromCharCode(65 + idx)}) ${opt}
+                            </button>
+                        `;
+                    });
+
+                    document.getElementById('quiz-feedback').classList.remove('show');
+                    document.getElementById('quiz-next-btn').style.display = 'none';
+                },
+
+                selectAnswer(idx) {
+                    if (this.selectedOption !== null) return; // Already answered
+                    this.selectedOption = idx;
+                    
+                    const qData = this.questions[this.currentIndex];
+                    const isCorrect = idx === qData.correct;
+                    
+                    // Style buttons
+                    document.querySelectorAll('.quiz-option').forEach((btn, i) => {
+                        btn.disabled = true;
+                        if (i === qData.correct) {
+                            btn.classList.add('correct');
+                        } else if (i === idx && !isCorrect) {
+                            btn.classList.add('wrong');
+                        }
+                    });
+
+                    // Feedback
+                    const feedbackBox = document.getElementById('quiz-feedback');
+                    const title = document.getElementById('quiz-feedback-title');
+                    
+                    feedbackBox.className = 'quiz-feedback show';
+                    if(isCorrect) {
+                        this.score++;
+                        feedbackBox.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                        feedbackBox.style.borderLeft = '4px solid var(--success)';
+                        title.innerText = 'Richtig!';
+                        title.style.color = 'var(--success)';
+                    } else {
+                        feedbackBox.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                        feedbackBox.style.borderLeft = '4px solid var(--error)';
+                        title.innerText = 'Falsch.';
+                        title.style.color = 'var(--error)';
+                    }
+                    document.getElementById('quiz-feedback-text').innerText = qData.explanation || '';
+                    document.getElementById('quiz-next-btn').style.display = 'block';
+                },
+
+                nextQuestion() {
+                    this.currentIndex++;
+                    if(this.currentIndex < this.questions.length) {
+                        this.showQuestion();
+                    } else {
+                        this.showResult();
+                    }
+                },
+
+                showResult() {
+                    document.getElementById('quiz-active-area').style.display = 'none';
+                    document.getElementById('quiz-result-area').style.display = 'block';
+                    
+                    const percentage = Math.round((this.score / this.questions.length) * 100);
+                    const circle = document.getElementById('quiz-score-circle');
+                    const title = document.getElementById('quiz-result-text');
+                    const sub = document.getElementById('quiz-result-subtext');
+                    
+                    circle.innerText = `${percentage}%`;
+                    
+                    // Define colors and messages based on result
+                    let color = 'var(--primary)';
+                    if(percentage >= 90) {
+                        title.innerText = 'Hervorragend!'; sub.innerText = 'Du beherrschst dieses Thema sehr gut.'; color = 'var(--success)';
+                    } else if(percentage >= 70) {
+                        title.innerText = 'Gut gemacht!'; sub.innerText = 'Einige Bereiche kannst du noch weiter üben.'; color = 'var(--primary)';
+                    } else if(percentage >= 50) {
+                        title.innerText = 'Guter Anfang.'; sub.innerText = 'Wiederhole die wichtigsten Grundlagen.'; color = 'var(--warning)';
+                    } else {
+                        title.innerText = 'Keine Sorge!'; sub.innerText = 'Wiederhole den Lernstoff und versuche es anschließend erneut.'; color = 'var(--error)';
+                    }
+                    
+                    circle.style.borderColor = color;
+                    circle.style.color = color;
+
+                    // Save Progress
+                    app.progress.quizScores[app.currentTopic] = Math.max(app.progress.quizScores[app.currentTopic] || 0, percentage);
+                    app.logActivity('quiz', `Quiz abgeschlossen (${percentage}%)`);
+                }
+            }
+        };
+
+        // Starte die App, sobald das DOM geladen ist
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+
+    </script>
+</body>
+</html>
